@@ -6,7 +6,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 document.getElementById("sendButton").disabled = true;
 
 connection.on("ReceiveMessage", function (user, message) {
-    window.open('https://www.google.ru/search?q=${message}', '_blank');
+    window.open(`https://www.google.ru/search?q=${message}`, '_blank');
 });
 
 connection.start().then(function () {

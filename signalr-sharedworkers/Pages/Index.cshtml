@@ -1,5 +1,13 @@
 ﻿@page
+@{
+    ViewData["Title"] = "Index";
+}
 <div class="container">
+    <h5>Подтверждение проблемы, при открытии n вкладок и вводе сообщения, откроется n окон гугла. При этом к хабу установлено n соединений</h5>
+
+    <a target="_blank" href="/">открыть еще вкладку</a>
+    <br />
+    <a target="_blank" href="/sharedworker">ссылка на shared worker</a>
     <div class="row">&nbsp;</div>
     <div class="row">
         <div class="col-6">&nbsp;</div>
@@ -24,80 +32,118 @@
 </div>
 
 @*Используйте эти 2 строчки, чтобы использовать просто обычный js. Откройте n вкладок
-, отправьте сообщение с любой из страниц, откроется n окон
+    , отправьте сообщение с любой из страниц, откроется n окон*@
 <script src="~/lib/@@aspnet/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/chat.js"></script>*@
+<script src="~/js/chat.js"></script>
 
-@*пример работы web workers
-<script src="~/lib/@@aspnet/signalr/dist/webworker/signalr.js"></script>
-<script>
-    if (window.Worker) {
-        var worker = new Worker('/js/worker.js')
-        worker.postMessage(window.location.origin);
-        let messageText = document.getElementById('messageInput');
-        let broadcastButton = document.getElementById('sendButton');
-        let userText = document.getElementById('userInput');
+@*<script src="~/lib/@@aspnet/signalr/dist/webworker/signalr.js"></script>
+    <script>
+        if (window.Worker) {
+            var worker = new Worker('/js/worker.js')
+            worker.postMessage(window.location.origin);
+            let messageText = document.getElementById('messageInput');
+            let broadcastButton = document.getElementById('sendButton');
+            let userText = document.getElementById('userInput');
 
-        broadcastButton.addEventListener('click', function (event) {
-            worker.postMessage({
-                user: userText.value,
-                message: messageText.value
+            broadcastButton.addEventListener('click', function (event) {
+                worker.postMessage({
+                    user: userText.value,
+                    message: messageText.value
+                });
+                event.preventDefault();
             });
-            event.preventDefault();
-        });
 
-        worker.onmessage = function (e) {
-            console.log(e);
-            //if (e.data === 'connected') {
-            //    //broadcastButton.disabled = false;
-            //    //addLine('Connection started.');
-            //} else {
-            //    //addLine(e.data);
-            //}
-        };
-    } else {
-        addLine('Web workers are not supported by this browser!')
-    }
-</script>*@
+            worker.onmessage = function (e) {
+                console.log(e);
+                //if (e.data === 'connected') {
+                //    //broadcastButton.disabled = false;
+                //    //addLine('Connection started.');
+                //} else {
+                //    //addLine(e.data);
+                //}
+            };
+        } else {
+            addLine('Web workers are not supported by this browser!')
+        }
+    </script>*@
 
 @*пример работы shared worker*@
 
-<script src="~/lib/@@aspnet/signalr/dist/webworker/signalr.js"></script>
-<script>
-    if (window.SharedWorker) {
-        var worker = new SharedWorker('/js/sharedworker.js');
-        worker.port.postMessage({
-            type: 'init',
-            location: window.location.origin
-        });
-
-        let messageText = document.getElementById('messageInput');
-        let broadcastButton = document.getElementById('sendButton');
-        let userText = document.getElementById('userInput');
-
-        broadcastButton.addEventListener('click', function (event) {
+@*<script src="~/lib/@@aspnet/signalr/dist/webworker/signalr.js"></script>
+    <script>
+        if (window.SharedWorker) {
+            var worker = new SharedWorker('/js/sharedworker.js');
             worker.port.postMessage({
-                type: 'message',
-                user: userText.value,
-                message: messageText.value
+                type: 'init',
+                location: window.location.origin
             });
-            event.preventDefault();
-        });
 
-        worker.port.onmessage = function (e) {
-            console.log(e);
-            if (e.data.type == 'openUrl') {
-                window.open(e.data.url, '_blank');
-            }
-           
-        };
+            let messageText = document.getElementById('messageInput');
+            let broadcastButton = document.getElementById('sendButton');
+            let userText = document.getElementById('userInput');
 
-        addEventListener('beforeunload', function () {
+            broadcastButton.addEventListener('click', function (event) {
+                worker.port.postMessage({
+                    type: 'message',
+                    user: userText.value,
+                    message: messageText.value
+                });
+                event.preventDefault();
+            });
+
+            worker.port.onmessage = function (e) {
+                console.log(e);
+                if (e.data.type == 'openUrl') {
+                    window.open(e.data.url, '_blank');
+                }
+
+            };
+
+            addEventListener('beforeunload', function () {
+                worker.port.postMessage({
+                    type: 'close'
+                });
+            });
+        } else {
+            console.log('Web workers are not supported by this browser!')
+        }
+    </script>*@
+@*<script src="~/lib/@@aspnet/signalr/dist/webworker/signalr.js"></script>
+    <script>
+        if (window.SharedWorker) {
+            var worker = new SharedWorker('/js/sharedworker.js');
             worker.port.postMessage({
-                type: 'close'
+                type: 'init',
+                location: window.location.origin
             });
-        });
-    } else {
-        console.log('Web workers are not supported by this browser!')
-    }
-</script>
+
+            let messageText = document.getElementById('messageInput');
+            let broadcastButton = document.getElementById('sendButton');
+            let userText = document.getElementById('userInput');
+
+            broadcastButton.addEventListener('click', function (event) {
+                worker.port.postMessage({
+                    type: 'message',
+                    user: userText.value,
+                    message: messageText.value
+                });
+                event.preventDefault();
+            });
+
+            worker.port.onmessage = function (e) {
+                console.log(e);
+                if (e.data.type == 'openUrl') {
+                    window.open(e.data.url, '_blank');
+                }
+
+            };
+
+            addEventListener('beforeunload', function () {
+                worker.port.postMessage({
+                    type: 'close'
+                });
+            });
+        } else {
+            console.log('Web workers are not supported by this browser!')
+        }
+    </script>*@
