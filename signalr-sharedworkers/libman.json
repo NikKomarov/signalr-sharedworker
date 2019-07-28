@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "@aspnet/signalr@3.0.0-preview6.19307.2",
+      "destination": "wwwroot/lib/@aspnet/signalr/",
+      "files": [
+        "dist/webworker/signalr.js",
+        "dist/webworker/signalr.min.js",
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.min.js"
+      ]
+    }
+  ]
+}
