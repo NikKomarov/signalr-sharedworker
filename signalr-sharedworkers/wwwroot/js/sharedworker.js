@@ -16,12 +16,15 @@ onconnect = function (e) {
                 connection.on("ReceiveMessage", function (user, message) {
                     console.log(clients);
 
-                    //отправляем сообщение всем
+                    //send to all clients
                     //for (var i = 0; i < clients.length; i++) {
-                    //    clients[i].postMessage(`https://www.google.ru/search?q=${message}`);
+                    //    clients[i].postMessage({
+                    //type: 'openUrl',
+                    // url: `https://www.google.ru/search?q=${message}`
+                    //});
                     //}
 
-                    //отправляем сообщение только последнему, так как он скорее всего самый живой
+                    //send to 1 alive client, for example if we want to process event only once
                     clients[clients.length - 1].postMessage(
                         {
                             type: 'openUrl',

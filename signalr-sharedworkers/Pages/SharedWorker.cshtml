@@ -3,10 +3,10 @@
     ViewData["Title"] = "Shared worker";
 }
 <div class="container">
-    <h5>Shared workers, можно открыть много вкладок, при вводе сообщения откроется только одна вкладка гугла. При этом существует только одно соединение с хабом</h5>
-    <h6>для корректной работы необходимо закрыть все вкладки index, отставить только /sharedworker</h6>
-    <h6>дебаггинг воркера осуществляется отдельно chrome://inspect/#workers  или https://developer.mozilla.org/ru/docs/Tools/about:debugging#Workers</h6>
-    <a target="_blank" href="/sharedworker">открыть еще вкладку</a>
+    <h5>Shared workers, your can open many tabs, but only 1 google tab will be open. Only 1 connection with hub exists</h5>
+    <h6>close all index tabs, leave only sharedworker</h6>
+    <h6>debugging chrome://inspect/#workers or https://developer.mozilla.org/ru/docs/Tools/about:debugging#Workers</h6>
+    <a target="_blank" href="/sharedworker">open 1 more tab</a>
 
     <div class="row">&nbsp;</div>
     <div class="row">
@@ -32,7 +32,6 @@
 </div>
 
 @*пример работы shared worker*@
-
 <script src="~/lib/@@aspnet/signalr/dist/webworker/signalr.js"></script>
 <script>
     if (window.SharedWorker) {
